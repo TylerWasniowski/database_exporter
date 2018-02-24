@@ -43,7 +43,7 @@ pub fn convert_records(conn: &Connection) -> String {
 }
 
 // Could use std::any::Any; to implement 'dynamic types'
-pub fn generate_records(conn: &Connection, record_count: i32) {
+pub fn insert_generated_records(conn: &Connection, record_count: i32) {
     for _ in 0..record_count {
         conn.execute("INSERT INTO users (name, data)
             VALUES (?1, ?2)",
@@ -51,8 +51,8 @@ pub fn generate_records(conn: &Connection, record_count: i32) {
     }
 }
 
-pub fn create_conn() -> Connection {
-    Connection::open("./db.sqlite").unwrap()
+pub fn create_conn(path: String) -> Connection {
+    Connection::open(path).unwrap()
 }
 
 pub fn create_table(conn: &Connection) {
@@ -75,15 +75,9 @@ mod tests {
     use test::Bencher;
     use super::*;
 
-    #[test]
-    fn test_column_names() {
-        let conn = create_conn();
-        get_column_names(&conn);
-    }
-
     #[bench]
     fn bench_generate_records(bench: &mut Bencher) {
-        let conn = create_conn();
+        let conn = create_conn("./db.sqlite".to_string());
         bench.iter(|| convert_records(&conn));
     }
 }

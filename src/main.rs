@@ -6,11 +6,10 @@ extern crate fake;
 extern crate rusqlite;
 
 mod generate_records;
+mod serializer;
 
 fn main() {
-    let conn = generate_records::create_conn();
-    generate_records::create_table(&conn);
-    generate_records::generate_records(&conn, 100_000);
-    let result = generate_records::convert_records(&conn);
-    println!("{}", result);
+    let conn = generate_records::create_conn("./db.sqlite".to_string());
+//    generate_records::insert_generated_records(&conn, 2);
+    println!("{}", serializer::to_json(&conn));
 }
